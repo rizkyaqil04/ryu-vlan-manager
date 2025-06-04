@@ -1,0 +1,14 @@
+services:
+  mininet:
+    image: mininet-custom
+    container_name: mininet-container
+    tty: true
+    stdin_open: true
+    privileged: true
+    network_mode: bridge
+    environment:
+      - DISPLAY
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - /lib/modules:/lib/modules
+      - ./src:/root/src
