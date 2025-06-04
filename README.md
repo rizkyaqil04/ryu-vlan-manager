@@ -17,15 +17,15 @@ This project implements a simple VLAN-aware SDN controller application using the
 ## 🛠️ Architecture
 
 ```
-+--------------+        REST API         +--------------------+
-| User / Admin | <---------------------> | Ryu VLAN Controller|
-+--------------+                         +--------------------+
++--------------+        REST API         +---------------------+
+| User / Admin | <---------------------> | Ryu VLAN Controller |
++--------------+                         +---------------------+
                                                |
                                                | OpenFlow
                                                v
-                                         +------------+
-                                         | Open vSwitch|
-                                         +------------+
+                                         +--------------+
+                                         | Open vSwitch |
+                                         +--------------+
                                                |
                                           +----------+
                                           | Mininet  |
