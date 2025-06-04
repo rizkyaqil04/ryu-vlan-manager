@@ -1,7 +1,16 @@
 services:
   mininet:
-    image: mininet-custom
-    container_name: mininet-container
+    build:
+      dockerfile_inline: |
+        FROM iwaseyusuke/mininet:ubuntu-22.04
+
+        RUN apt-get update && \
+            apt-get install -y tmux python3-pip && \
+            pip3 install --no-cache-dir ryu && \
+            apt-get clean && \
+            sed -i '/class _AlreadyHandledResponse/,/^$/d' /usr/local/lib/python3.*/dist-packages/ryu/app/wsgi.py && \
+            sed -i '/_AlreadyHandledResponse()/d' /usr/local/lib/python3.*/dist-packages/ryu/app/wsgi.py
+
     tty: true
     stdin_open: true
     privileged: true
