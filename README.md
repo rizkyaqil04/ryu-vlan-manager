@@ -111,7 +111,9 @@ docker compose run --rm mininet
 
 6. Perform VLAN assignments through the REST API or GUI as needed.
 
-![VLAN Manager UI example](./image/assignment-table.png)
+<p align="center">
+  <img src="./image/assignment-table.png" alt="VLAN Manager UI example" width="400"/>
+</p>
 
 ---
 
