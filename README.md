@@ -113,7 +113,7 @@ docker compose run --rm --service-ports --name ryu-vlan-manager mininet
 6. Perform VLAN assignments through the REST API or GUI as needed.
 
 <p align="center">
-  <img src="./image/assignment-table.png" alt="VLAN Manager UI example" width="400"/>
+  <img src="./preview/assignment-table.png" alt="VLAN Manager UI example" width="400"/>
 </p>
 
 ---
