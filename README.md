@@ -53,8 +53,6 @@ docker compose run --rm --service-ports --name ryu-vlan-manager mininet
 ```
 .
 ├── docker-compose.yml
-├── Dockerfile
-├── README.md
 └── src
     ├── gui_topology
     │   ├── gui_topology.py
@@ -83,7 +81,7 @@ docker compose run --rm --service-ports --name ryu-vlan-manager mininet
 1. Start the Mininet container:
 
    ```bash
-   docker compose run --rm mininet
+   docker compose run --rm --service-ports --name ryu-vlan-manager mininet
    ```
 
 2. Once inside the container, launch `tmux` to manage multiple terminal sessions:
