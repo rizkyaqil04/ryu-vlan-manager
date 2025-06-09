@@ -4,38 +4,14 @@
 <meta charset="utf-8">
 <link rel="stylesheet" type="text/css" href="./ryu.topology.css">
 <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-<style>
-#vlan-manager, #vlan-table-container {
-  background: #f8f8f8;
-  padding: 10px;
-  margin-bottom: 20px;
-  border-radius: 8px;
-  max-width: 700px;
-}
-#vlan-table, #port-form-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-#vlan-table th, #vlan-table td, #port-form-table th, #port-form-table td {
-  padding: 4px 8px;
-  border: 1px solid #bbb;
-  text-align: center;
-}
-#topology-container {
-  margin-bottom: 30px;
-}
-</style>
 </head>
 <body>
-<h1>Ryu Topology Viewer</h1>
-
-<div id="topology-container"></div>
+<h1 class="main-title">Ryu Vlan Manager</h1>
 
 <div id="vlan-manager">
   <h2>VLAN Manager</h2>
-  <label>Pilih Switch (DPID): 
-    <select id="dpid-dropdown"></select>
-  </label>
+  <label for="dpid-dropdown" style="font-weight:500;">Select Switch (DPID):</label>
+  <select id="dpid-dropdown" style="margin-left:8px;"></select>
   <form id="vlan-bulk-form">
     <table id="port-form-table">
       <thead>
@@ -47,7 +23,7 @@
         </tr>
       </thead>
       <tbody>
-        <!-- Baris port akan diisi JS -->
+        <!-- Data will be filled by JS -->
       </tbody>
     </table>
   </form>
@@ -73,8 +49,14 @@
 
 <div id="info-container">
   <h2>Topology Information</h2>
+  <div id="topology-container">
+    <!-- The SVG topology will be appended here by JS -->
+  </div>
   <div id="switch-info">
-    <!-- Informasi DPID dan flow entries akan diisi oleh JS -->
+    <!-- DPID info will be shown here -->
+  </div>
+  <div id="flow-entries">
+    <!-- Flow entries table will be shown here -->
   </div>
 </div>
 

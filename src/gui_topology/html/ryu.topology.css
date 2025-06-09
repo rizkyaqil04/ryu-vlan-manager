@@ -1,9 +1,149 @@
-#topology {  
-    border: 1px solid #000000;  
+body {
+    font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+    background: #f4f7fa;
+    color: #222;
+    margin: 0;
+    padding: 0;
 }
 
-/* .node {
-} */
+.main-title {
+    text-align: center;
+    margin-top: 32px;
+    margin-bottom: 18px;
+    letter-spacing: 1px;
+}
+
+h1, h2, h3 {
+    color: #2a4d69;
+    margin-bottom: 10px;
+}
+
+#topology {  
+    border: 2px solid #2a4d69;  
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
+}
+
+#vlan-manager, #vlan-table-container, #info-container {
+    background: #fff;
+    padding: 18px 22px;
+    margin: 24px auto 20px auto;
+    border-radius: 14px;
+    max-width: 800px;
+    box-shadow: 0 2px 12px rgba(44, 62, 80, 0.10);
+}
+
+#vlan-table, #port-form-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+}
+
+#vlan-table th, #vlan-table td, #port-form-table th, #port-form-table td {
+    padding: 8px 12px;
+    border: 1px solid #dbe2ef;
+    text-align: center;
+    font-size: 15px;
+}
+
+#vlan-table th, #port-form-table th {
+    background: #e3eafc;
+    color: #2a4d69;
+    font-weight: 600;
+}
+
+#vlan-table tr:nth-child(even), #port-form-table tr:nth-child(even) {
+    background: #f7fafd;
+}
+
+#vlan-table tr:hover, #port-form-table tr:hover {
+    background: #eaf6fb;
+}
+
+button, input[type="button"] {
+    background: #2a4d69;
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    padding: 8px 18px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 8px;
+}
+button:hover, input[type="button"]:hover {
+    background: #376996;
+}
+
+select, input[type="text"] {
+    border: 1px solid #bfc9d1;
+    border-radius: 5px;
+    padding: 5px 8px;
+    font-size: 15px;
+    background: #f7fafd;
+    transition: border 0.2s;
+}
+select:focus, input[type="text"]:focus {
+    border: 1.5px solid #2a4d69;
+    outline: none;
+}
+
+#topology-container {
+    margin-bottom: 30px;
+    max-width: 100%;
+    overflow-x: auto;
+    padding: 10px 0;
+    box-sizing: border-box;
+}
+
+#topology {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto;
+}
+
+#flow-entries {
+    margin-top: 18px;
+    background: #f7fafd;
+    border-radius: 8px;
+    padding: 12px 16px;
+    box-shadow: 0 1px 4px rgba(44, 62, 80, 0.05);
+}
+
+.flow-table-wrapper {
+    overflow-x: auto;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding-bottom: 8px;
+}
+
+.flow-table {
+    width: 100%;
+    min-width: 700px;
+    border-collapse: collapse;
+    background: #f7fafd;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(44,62,80,0.05);
+}
+
+.flow-table th, .flow-table td {
+    padding: 8px 12px;
+    border: 1px solid #dbe2ef;
+    text-align: center;
+    font-size: 14px;
+}
+
+.flow-table th {
+    background: #e3eafc;
+    color: #2a4d69;
+    font-weight: 600;
+}
+
+.flow-table tr:nth-child(even) {
+    background: #f7fafd;
+}
 
 .node.fixed {
     fill: #C0C0C0;
@@ -11,25 +151,55 @@
 
 .node text {
     font-size: 14px;
+    font-weight: 500;
+    fill: #2a4d69;
 }
 
 .link {
-    stroke: #090909;
-    stroke-opacity: .6;
-    stroke-width: 2px;
+    stroke: #376996;
+    stroke-opacity: .7;
+    stroke-width: 2.5px;
 }
 
 .host-link {
-    stroke: #090909;
-    stroke-opacity: .6;
-    stroke-width: 2px;
+    stroke: #376996;
+    stroke-opacity: .7;
+    stroke-width: 2.5px;
 }
 
 .port circle {
-    stroke: black;
-    fill: #C5F9F9;
+    stroke: #2a4d69;
+    fill: #e3eafc;
 }
 
 .port text {
-    font-size: 10px;
+    font-size: 11px;
+    fill: #2a4d69;
+}
+
+#switch-info, #flow-entries {
+    margin-top: 18px;
+    background: #f7fafd;
+    border-radius: 8px;
+    padding: 12px 16px;
+    box-shadow: 0 1px 4px rgba(44, 62, 80, 0.05);
+}
+
+pre {
+    background: #f4f7fa;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 13px;
+    color: #2a4d69;
+    margin: 0;
+    overflow-x: auto;
+}
+
+.flow-table td.match, .flow-table td.actions {
+    text-align: left;
+    font-family: 'Fira Mono', 'Consolas', 'Menlo', 'Monaco', monospace;
+    font-size: 13px;
+    white-space: pre-wrap;
+    background: #f4f7fa;
+    border-radius: 4px;
 }

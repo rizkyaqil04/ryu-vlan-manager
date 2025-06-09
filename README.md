@@ -37,12 +37,13 @@ This project implements a simple VLAN-aware SDN controller application using the
 ## 🚀 Getting Started
 
 ### Prerequisites
+- Linux (tested on Ubuntu, Fedora, and Arch; works on both bare metal and virtual machines)
 - Docker (with Compose v2+)
 
 ### 🐳 Running with Docker Compose
 
 ```bash
-docker compose run --rm mininet
+docker compose run --rm --service-ports --name ryu-vlan-manager mininet
 ```
 
 > This builds and launches the Mininet container with the Ryu VLAN Manager app pre-installed and patched.
@@ -97,7 +98,7 @@ docker compose run --rm mininet
    ryu-manager --observe-links /root/src/gui_topology/gui_topology.py /root/src/vlan_manager.py
    ```
 
-4. Open a new tmux pane (`Ctrl+b` then `"`), and run Mininet with a simple tree topology:
+4. Open a new tmux pane (`Ctrl+b` then `%`), and run Mininet with a simple tree topology:
 
    ```bash
    mn --topo tree,depth=2 --controller remote --mac
@@ -117,6 +118,12 @@ docker compose run --rm mininet
 
 ---
 
+## 🤖 AI Assistance
+
+Some parts of this project, including code and documentation, were developed with the assistance of AI tools such as GitHub Copilot (GPT-4.1 model) and ChatGPT (GPT-4o model). These tools were used to accelerate development, provide code suggestions, and improve documentation clarity.
+
+---
+
 ## 📚 References
 
 - [Ryu SDN Framework](https://osrg.github.io/ryu/)
@@ -127,4 +134,4 @@ docker compose run --rm mininet
 
 ## 📝 License
 
-MIT License – feel free to use, modify, and contribute!
+[MIT License](LICENSE) – feel free to use, modify, and contribute!

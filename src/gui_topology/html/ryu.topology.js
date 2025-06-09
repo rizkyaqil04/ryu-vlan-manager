@@ -4,7 +4,7 @@ var CONF = {
         height: 40
     },
     force: {
-        width: 960,
+        width: 790,
         height: 500,
         dist: 200,
         charge: -600
@@ -35,7 +35,7 @@ var elem = {
         .charge(CONF.force.charge)
         .linkDistance(CONF.force.dist)
         .on("tick", _tick),
-    svg: d3.select("body").append("svg")
+    svg: d3.select("#topology-container").append("svg")
         .attr("id", "topology")
         .attr("width", CONF.force.width)
         .attr("height", CONF.force.height),
@@ -58,16 +58,66 @@ function _tick() {
 }
 elem.drag = elem.force.drag().on("dragstart", _dragstart);
 function _dragstart(d) {
-    var dpid = dpid_to_int(d.dpid)
+    var dpid = dpid_to_int(d.dpid);
+
+    // Fetch flow entries for the selected switch
     d3.json("/stats/flow/" + dpid, function(e, data) {
-        flows = data[dpid];
-        console.log(flows);
-        elem.console.selectAll("ul").remove();
-        li = elem.console.append("ul")
-            .selectAll("li");
-        li.data(flows).enter().append("li")
-            .text(function (d) { return JSON.stringify(d, null, " "); });
+        var flows = data[dpid];
+        // Show DPID info
+        var switchInfoDiv = document.getElementById("switch-info");
+        switchInfoDiv.innerHTML = "<b>DPID:</b> " + trim_zero(d.dpid);
+
+        // Show flow entries in a separate table
+        var flowDiv = document.getElementById("flow-entries");
+        if (!flowDiv) {
+            // Create the div if it doesn't exist
+            flowDiv = document.createElement("div");
+            flowDiv.id = "flow-entries";
+            switchInfoDiv.parentNode.appendChild(flowDiv);
+        }
+        if (!flows || flows.length === 0) {
+            flowDiv.innerHTML = "<h3>Flow Entries</h3><p>No flow entries found.</p>";
+            return;
+        }
+
+        // Build table with more columns
+        var table = `<h3>Flow Entries</h3>
+        <div class="flow-table-wrapper">
+        <table class="flow-table" border="0" cellpadding="6" style="border-collapse:collapse; width:100%; background:#f7fafd; border-radius:8px; box-shadow:0 1px 4px rgba(44,62,80,0.05);">
+        <thead>
+        <tr style="background:#e3eafc;">
+        <th>Cookie</th>
+        <th>Duration (s)</th>
+        <th>Table</th>
+        <th>Packets</th>
+        <th>Bytes</th>
+        <th>Idle Timeout</th>
+        <th>Hard Timeout</th>
+        <th>Priority</th>
+        <th>Match</th>
+        <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>`;
+
+        flows.forEach(function(flow) {
+            table += "<tr>";
+            table += "<td>" + (flow.cookie !== undefined ? flow.cookie : "") + "</td>";
+            table += "<td>" + (flow.duration_sec !== undefined ? flow.duration_sec : "") + "</td>";
+            table += "<td>" + (flow.table_id !== undefined ? flow.table_id : "") + "</td>";
+            table += "<td>" + (flow.packet_count !== undefined ? flow.packet_count : "") + "</td>";
+            table += "<td>" + (flow.byte_count !== undefined ? flow.byte_count : "") + "</td>";
+            table += "<td>" + (flow.idle_timeout !== undefined ? flow.idle_timeout : "") + "</td>";
+            table += "<td>" + (flow.hard_timeout !== undefined ? flow.hard_timeout : "") + "</td>";
+            table += "<td>" + (flow.priority !== undefined ? flow.priority : "") + "</td>";
+            table += "<td class='match'><pre style='white-space:pre-wrap;'>" + JSON.stringify(flow.match, null, 1) + "</pre></td>";
+            table += "<td class='actions'><pre style='white-space:pre-wrap;'>" + JSON.stringify(flow.actions || flow.instructions, null, 1) + "</pre></td>";
+            table += "</tr>";
+        });
+        table += "</tbody></table></div>";
+        flowDiv.innerHTML = table;
     });
+
     d3.select(this).classed("fixed", d.fixed = true);
 }
 elem.node = elem.svg.selectAll(".node");
@@ -129,7 +179,7 @@ var topo = {
     initialize: function (data) {
         this.add_nodes(data.switches);
         this.add_links(data.links);
-        if (data.hosts) this.add_hosts(data.hosts); // Tambahkan host
+        if (data.hosts) this.add_hosts(data.hosts); // Add hosts if present
     },
     add_nodes: function (nodes) {
         for (var i = 0; i < nodes.length; i++) {
@@ -158,22 +208,18 @@ var topo = {
         }
     },
     add_hosts: function(hosts) {
-        // var hostCount = 1; // Tambahkan counter host
         for (var i = 0; i < hosts.length; i++) {
             var host = hosts[i];
-            // Tambahkan node host dengan nama h1, h2, dst
             var hostNode = {
-                dpid: host.mac, // gunakan MAC sebagai id unik
+                dpid: host.mac, // use MAC as unique id
                 mac: host.mac,
                 ipv4: host.ipv4,
-                isHost: true,
-                // name: "h" + hostCount // nama host
+                isHost: true
             };
-            // hostCount++;
             this.nodes.push(hostNode);
             this.refresh_node_index();
 
-            // Buat link host ke switch jika info port lengkap
+            // Create link from host to switch if port info is complete
             if (
                 host.port &&
                 typeof host.port.dpid !== "undefined" &&
@@ -185,7 +231,7 @@ var topo = {
                     source: hostIdx,
                     target: swIdx,
                     port: { 
-                        src: { dpid: host.mac, port_no: 1 }, // port_no dummy untuk host
+                        src: { dpid: host.mac, port_no: 1 }, // dummy port_no for host
                         dst: { dpid: host.port.dpid, port_no: host.port.port_no }
                     },
                     isHostLink: true
@@ -197,7 +243,7 @@ var topo = {
         for (var i = 0; i < nodes.length; i++) {
             console.log("delete switch: " + JSON.stringify(nodes[i]));
 
-            node_index = this.get_node_index(nodes[i]);
+            var node_index = this.get_node_index(nodes[i]);
             this.nodes.splice(node_index, 1);
         }
         this.refresh_node_index();
@@ -207,7 +253,7 @@ var topo = {
             if (!is_valid_link(links[i])) continue;
             console.log("delete link: " + JSON.stringify(links[i]));
 
-            link_index = this.get_link_index(links[i]);
+            var link_index = this.get_link_index(links[i]);
             this.links.splice(link_index, 1);
         }
     },
@@ -235,7 +281,7 @@ var topo = {
         var pushed = {};
         for (var i = 0; i < this.links.length; i++) {
             function _push(p, dir) {
-                key = p.dpid + ":" + p.port_no;
+                var key = p.dpid + ":" + p.port_no;
                 if (key in pushed) {
                     return 0;
                 }
@@ -309,7 +355,7 @@ var rpc = {
 function initialize_topology() {
     d3.json("/v1.0/topology/switches", function(error, switches) {
         d3.json("/v1.0/topology/links", function(error, links) {
-            // Ambil data host
+            // Get host data
             d3.json("/v1.0/topology/hosts", function(error, hosts) {
                 topo.initialize({switches: switches, links: links, hosts: hosts});
                 elem.update();
@@ -337,7 +383,7 @@ function populateDPIDDropdown() {
         dropdown.innerHTML = "";
         switches.forEach(function(sw) {
             var opt = document.createElement("option");
-            opt.value = sw.dpid; // gunakan string
+            opt.value = sw.dpid;
             opt.text = "dpid: " + parseInt(sw.dpid, 16);
             dropdown.appendChild(opt);
         });
@@ -354,7 +400,7 @@ function renderPortForm(dpid) {
     var tbody = document.querySelector("#port-form-table tbody");
     if (!tbody) return;
 
-    tbody.innerHTML = ""; // Bersihkan semua isi tbody (termasuk tombol dan baris port sebelumnya)
+    tbody.innerHTML = ""; // Clear all tbody content (including button and previous port rows)
 
     fetchJSON("/v1.0/topology/switches", function(switches) {
         var sw = switches.find(s => s.dpid == dpid);
@@ -370,12 +416,12 @@ function renderPortForm(dpid) {
                     var portStr = String(port.port_no);
                     var tr = document.createElement("tr");
 
-                    // Buat kolom Port
+                    // Port column
                     var tdPort = document.createElement("td");
                     tdPort.textContent = portStr;
                     tr.appendChild(tdPort);
 
-                    // Buat kolom Type (Access/Trunk)
+                    // Type column (Access/Trunk)
                     var tdType = document.createElement("td");
                     var sel = document.createElement("select");
                     sel.innerHTML = "<option value='access'>Access</option><option value='trunk'>Trunk</option>";
@@ -384,17 +430,18 @@ function renderPortForm(dpid) {
                     tdType.appendChild(sel);
                     tr.appendChild(tdType);
 
-                    // Buat kolom VLAN ID
+                    // VLAN ID column
                     var tdVlan = document.createElement("td");
                     var inp = document.createElement("input");
                     inp.type = "text";
                     inp.size = 8;
+                    inp.placeholder = "e.g. 10,20";
                     if (access[portStr]) inp.value = access[portStr];
                     else if (trunk[portStr]) inp.value = trunk[portStr].join(",");
                     tdVlan.appendChild(inp);
                     tr.appendChild(tdVlan);
 
-                    // Buat kolom Assign (Checkbox)
+                    // Assign column (Checkbox)
                     var tdCheck = document.createElement("td");
                     var cb = document.createElement("input");
                     cb.type = "checkbox";
@@ -404,7 +451,7 @@ function renderPortForm(dpid) {
                     tbody.appendChild(tr);
                 });
 
-                // Tambahkan baris tombol Assign All Checked (hanya sekali)
+                // Add "Assign All Checked" button row (only once)
                 var trBtn = document.createElement("tr");
                 var tdBtn = document.createElement("td");
                 tdBtn.colSpan = 4;
@@ -477,7 +524,6 @@ function assignVLAN(dpid, port, vlan_id, type, callback) {
     xhr.send(data);
 }
 
-
 // Render VLAN assignment table
 function renderVlanTable() {
     fetchJSON("/v1.0/topology/switches", function(switches) {
@@ -523,12 +569,12 @@ function renderVlanTable() {
     });
 }
 
-// Fungsi utama
+// Main function
 function main() {
     initialize_topology();
     populateDPIDDropdown();
     renderVlanTable();
 }
 
-// Jalankan fungsi utama
+// Run main function
 main();
