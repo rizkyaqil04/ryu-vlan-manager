@@ -16,20 +16,15 @@ This project implements a simple VLAN-aware SDN controller application using the
 
 ## 🛠️ Architecture
 
-```
-+--------------+        REST API         +---------------------+
-| User / Admin | <---------------------> | Ryu VLAN Controller |
-+--------------+                         +---------------------+
-                                               |
-                                               | OpenFlow
-                                               v
-                                         +--------------+
-                                         | Open vSwitch |
-                                         +--------------+
-                                               |
-                                          +----------+
-                                          | Mininet  |
-                                          +----------+
+```mermaid
+flowchart TD
+    user(("User / Admin")) <-- REST API --> controller["Ryu VLAN Controller"]
+    controller -- OpenFlow --> ovs["Open vSwitch"]
+    ovs --> mininet["Mininet"]
+
+     controller:::restapi
+    classDef restapi stroke-dasharray: 5 5
+    style controller stroke-width:1px,stroke-dasharray: 0
 ```
 
 ---
